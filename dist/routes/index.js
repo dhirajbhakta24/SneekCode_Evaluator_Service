@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-exports.default = {
-    PORT: process.env.PORT || 3000
-};
+const express_1 = __importDefault(require("express"));
+const v1_1 = __importDefault(require("./v1"));
+const apiRouter = express_1.default.Router();
+apiRouter.get('/v1', v1_1.default);
+exports.default = apiRouter;
