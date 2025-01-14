@@ -5,6 +5,7 @@ import apiRouter from './routes';
 import SampleWorker from "./workers/SampleWorker";
 import bullBoardAdapter from "./config/bullBoardConfig";
 import bodyParser from "body-parser";
+import runPython from "./containers/runPythonDocker";
 
 const app = express();
 
@@ -24,4 +25,15 @@ app.listen(serverConfig.PORT, () => {
       position: "SDE 1 L61",
       locatiion: "Remote | BLR | Noida"
     });
+    const code = `x = input()
+    y = input()
+    print("value of x is", x)
+    print("value of y is", y)
+    `;
+    const inputCase = `100
+    200
+    `;
+      
+      runPython(code, inputCase);
+    
   });
