@@ -1,39 +1,60 @@
-import express from 'express';
-import serverConfig from './config/serverConfig';
-import sampleQueueProducer from "./producers/sampleQueueProducer";
-import apiRouter from './routes';
-import SampleWorker from "./workers/SampleWorker";
-import bullBoardAdapter from "./config/bullBoardConfig";
 import bodyParser from "body-parser";
-import runPython from "./containers/runPythonDocker";
+import express, { Express } from "express";
 
-const app = express();
+import bullBoardAdapter from "./config/bullBoardConfig";
+import serverConfig from "./config/serverConfig";
+import runCpp from "./containers/runCpp";
+import apiRouter from "./routes";
+import SampleWorker from "./workers/SampleWorker";
+
+
+const app: Express = express();
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+
 app.use('/api', apiRouter);
 app.use('/ui', bullBoardAdapter.getRouter());
 
 app.listen(serverConfig.PORT, () => {
-    console.log(`Server started at *:${serverConfig.PORT}`);
-    console.log(`BullBoard dashboard running on: http://localhost:${serverConfig.PORT}/ui`);
-    SampleWorker('SampleQueue');
-    sampleQueueProducer('SampleJob', {
-      name: "Dhiraj",
-      company: "Microsoft",
-      position: "SDE 1 L61",
-      locatiion: "Remote | BLR | Noida"
-    });
-    const code = `x = input()
-    y = input()
-    print("value of x is", x)
-    print("value of y is", y)
-    `;
-    const inputCase = `100
-    200
-    `;
-      
-      runPython(code, inputCase);
-    
-  });
+  console.log(`Server started at *:${serverConfig.PORT}`);
+  console.log(`BullBoard dashboard running on: http://localhost:${serverConfig.PORT}/ui`);
+
+  SampleWorker('SampleQueue');
+
+  const userCode = `
+  
+    class Solution {
+      public:
+      vector<int> permute() {
+          vector<int> v;
+          v.push_back(10);
+          return v;
+      }
+    };
+  `;
+  const code = `
+  #include<iostream>
+  #include<vector>
+  #include<stdio.h>
+  using namespace std;
+  
+  ${userCode}
+  int main() {
+    Solution s;
+    vector<int> result = s.permute();
+    for(int x : result) {
+      cout<<x<<" ";
+    }
+    cout<<endl;
+    return 0;
+  }
+  `;
+
+const inputCase = `10
+`;
+
+  runCpp(code, inputCase);
+
+});
