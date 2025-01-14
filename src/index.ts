@@ -4,9 +4,13 @@ import sampleQueueProducer from "./producers/sampleQueueProducer";
 import apiRouter from './routes';
 import SampleWorker from "./workers/SampleWorker";
 import bullBoardAdapter from "./config/bullBoardConfig";
+import bodyParser from "body-parser";
 
 const app = express();
 
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+app.use(bodyParser.text());
 app.use('/api', apiRouter);
 app.use('/ui', bullBoardAdapter.getRouter());
 
